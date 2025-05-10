@@ -7,7 +7,11 @@ import { OrthographicCamera, PerspectiveCamera } from "@react-three/drei";
 import { useRef, useState, useEffect } from "react";
 import { useFrame } from "@react-three/fiber";
 
-export default function Scene({ talking = false, ...props }) {
+export default function Scene({
+  talking = false,
+  onSelect = () => {},
+  ...props
+}) {
   const { nodes, materials } = useSpline(
     "https://prod.spline.design/AEdvKX3iQxA6R5cC/scene.splinecode"
   );
@@ -49,6 +53,12 @@ export default function Scene({ talking = false, ...props }) {
     });
   });
 
+  // Handle object selection
+  const handleClick = (event, objectName) => {
+    event.stopPropagation();
+    onSelect(objectName);
+  };
+
   return (
     <>
       <color attach="background" args={["#000000"]} />
@@ -61,6 +71,7 @@ export default function Scene({ talking = false, ...props }) {
             castShadow
             receiveShadow
             position={[-263.46, 92.21, 0]}
+            onClick={(e) => handleClick(e, "Input")}
           />
           <PerspectiveCamera
             name="Camera"
@@ -72,7 +83,11 @@ export default function Scene({ talking = false, ...props }) {
             position={[-1.05, 254.39, 967.2]}
             rotation={[-0.25, 0, 0]}
           />
-          <group name="Face" position={[2, 72.62, 0]}>
+          <group
+            name="Face"
+            position={[2, 72.62, 0]}
+            onClick={(e) => handleClick(e, "Face")}
+          >
             <group name="scaleContainer" position={[0, -77.62, 0]}>
               <group name="rotationContainer" position={[0, -99.98, -147.87]}>
                 <mesh
@@ -83,6 +98,7 @@ export default function Scene({ talking = false, ...props }) {
                   receiveShadow
                   position={[56.77, 189.41, 115.33]}
                   scale={0.4}
+                  onClick={(e) => handleClick(e, "Right Eye")}
                 />
                 <mesh
                   name="Sphere"
@@ -92,6 +108,7 @@ export default function Scene({ talking = false, ...props }) {
                   receiveShadow
                   position={[-56.28, 189.41, 114.79]}
                   scale={0.4}
+                  onClick={(e) => handleClick(e, "Left Eye")}
                 />
                 <mesh
                   name="face"
@@ -105,6 +122,7 @@ export default function Scene({ talking = false, ...props }) {
                   rotation={[Math.PI / 2, 0, 0]}
                   scale={0.04}
                   ref={faceRef}
+                  onClick={(e) => handleClick(e, "Face Mesh")}
                 />
               </group>
             </group>
